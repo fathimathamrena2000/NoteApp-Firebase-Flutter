@@ -27,19 +27,22 @@ class Fbase {
 //     notesdata.doc(id).delete();
 //   }
 
-  Future<void> adddata(String titledata, int colorIndex) async {
+  Future<void> adddata(
+      String titledata, String descdata, int colorIndex) async {
     FirebaseFirestore.instance
         .collection("noteapp")
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("notes")
         .add({
       "note": titledata,
+      "desc": descdata,
       'colorIndex': colorIndex,
       "timstamp": Timestamp.now()
     });
   }
 
-  Future<void> updatedata(dynamic id, String titledata, int colorIndex) async {
+  Future<void> updatedata(
+      dynamic id, String titledata, String descdata, int colorIndex) async {
     FirebaseFirestore.instance
         .collection("noteapp")
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -47,6 +50,7 @@ class Fbase {
         .doc(id)
         .update({
       "note": titledata,
+      "desc": descdata,
       'colorIndex': colorIndex,
       "timstamp": Timestamp.now()
     });

@@ -7,6 +7,13 @@ const titlesnackbar = SnackBar(
   showCloseIcon: true,
 );
 
+const descnackbar = SnackBar(
+  content: Text("Add description"),
+  closeIconColor: Colors.green,
+  backgroundColor: Colors.green,
+  showCloseIcon: true,
+);
+
 const savesnackbar = SnackBar(
   content: Text("Notes saved"),
   closeIconColor: Colors.blue,

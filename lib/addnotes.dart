@@ -16,10 +16,13 @@ class Editing extends StatefulWidget {
 class _EditingState extends State<Editing> {
   Fbase fbase = Fbase();
   TextEditingController titleCntrler = TextEditingController();
+  TextEditingController descCntrler = TextEditingController();
 
   @override
   void dispose() {
     titleCntrler.dispose();
+    descCntrler.dispose();
+
     super.dispose();
   }
 
@@ -31,9 +34,12 @@ class _EditingState extends State<Editing> {
       onWillPop: () async {
         if (titleCntrler.text == '') {
           ScaffoldMessenger.of(context).showSnackBar(titlesnackbar);
+        } else if (descCntrler.text == '') {
         } else {
           String title = titleCntrler.text;
-          fbase.adddata(title, themeData.selectedIndex);
+          String desc = descCntrler.text;
+          fbase.adddata(title, desc, themeData.selectedIndex);
+
           titleCntrler.clear();
           ScaffoldMessenger.of(context).showSnackBar(savesnackbar);
         }
@@ -51,8 +57,8 @@ class _EditingState extends State<Editing> {
               child: Text(
                 "Title",
                 style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
                   color: Colors.grey,
                 ),
               ),
@@ -62,6 +68,24 @@ class _EditingState extends State<Editing> {
               width: MediaQuery.of(context).size.width * 0.9,
               child: TextField(
                 controller: titleCntrler,
+              ),
+            ),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Description",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 100,
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: TextField(
+                controller: descCntrler,
               ),
             ),
             InkWell(
@@ -86,9 +110,11 @@ class _EditingState extends State<Editing> {
           onPressed: () {
             if (titleCntrler.text == '') {
               ScaffoldMessenger.of(context).showSnackBar(titlesnackbar);
+            } else if (descCntrler.text == '') {
             } else {
               String title = titleCntrler.text;
-              fbase.adddata(title, themeData.selectedIndex);
+              String desc = descCntrler.text;
+              fbase.adddata(title, desc, themeData.selectedIndex);
               titleCntrler.clear();
               Navigator.of(context).pop();
               ScaffoldMessenger.of(context).showSnackBar(savesnackbar);

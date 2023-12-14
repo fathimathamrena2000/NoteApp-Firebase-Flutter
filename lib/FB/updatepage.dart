@@ -8,11 +8,13 @@ class Update extends StatefulWidget {
   final dynamic id;
   final String message;
   final int currentIndex;
+  final String description;
 
   const Update({
     super.key,
     required this.id,
     required this.message,
+    required this.description,
     required this.currentIndex,
   });
 
@@ -24,9 +26,12 @@ class _UpdateState extends State<Update> {
   Fbase fbase = Fbase();
 
   TextEditingController titleCntrler = TextEditingController();
+  TextEditingController descCntrler = TextEditingController();
+
   @override
   void dispose() {
     titleCntrler.dispose();
+    descCntrler.dispose();
     super.dispose();
   }
 
@@ -34,6 +39,7 @@ class _UpdateState extends State<Update> {
   Widget build(BuildContext context) {
     final themeData = Provider.of<Colorchange>(context, listen: true);
     titleCntrler.text = widget.message;
+    descCntrler.text = widget.description;
 
     return Scaffold(
       backgroundColor: themeData.listofclrs[themeData.selectedIndex],
@@ -47,9 +53,9 @@ class _UpdateState extends State<Update> {
             child: Text(
               "Title",
               style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w600,
-                color: Colors.black,
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
               ),
             ),
           ),
@@ -58,6 +64,24 @@ class _UpdateState extends State<Update> {
             width: MediaQuery.of(context).size.width * 0.9,
             child: TextField(
               controller: titleCntrler,
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              "Description",
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 100,
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: TextField(
+              controller: descCntrler,
             ),
           ),
           InkWell(
@@ -80,7 +104,8 @@ class _UpdateState extends State<Update> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           String title = titleCntrler.text;
-          fbase.updatedata(widget.id, title, themeData.selectedIndex);
+          String desc = descCntrler.text;
+          fbase.updatedata(widget.id, title, desc, themeData.selectedIndex);
 
           titleCntrler.clear();
           Navigator.of(context).pop();

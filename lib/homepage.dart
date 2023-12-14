@@ -56,242 +56,235 @@ class _Page1State extends State<Page1> {
         },
         child: const Icon(Icons.notes_rounded),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          height: double.infinity,
-          width: double.infinity,
-          child: StreamBuilder(
-              stream: FirebaseFirestore.instance
-                  .collection("noteapp")
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                  .collection("notes")
-                  .orderBy("timstamp", descending: true)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return isGridView
-                      ? GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2),
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            QueryDocumentSnapshot document =
-                                snapshot.data!.docs[index];
+      body: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("noteapp")
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection("notes")
+                .orderBy("timstamp", descending: true)
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return isGridView
+                    ? GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          QueryDocumentSnapshot document =
+                              snapshot.data!.docs[index];
 
-                            var id = snapshot.data!.docs[index].id;
+                          var id = snapshot.data!.docs[index].id;
 
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Dismissible(
-                                key: ValueKey(id),
-                                background: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height: 100,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                    ),
-                                    child: const Align(
-                                        alignment: Alignment.center,
-                                        child: Text("Deleted")),
-                                  ),
-                                ),
-                                confirmDismiss:
-                                    (DismissDirection direction) async {
-                                  return await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text("Confirm"),
-                                          content: const Text("Are you sure"),
-                                          actions: <Widget>[
-                                            ElevatedButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context)
-                                                        .pop(true),
-                                                child: const Text("Delete")),
-                                            ElevatedButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context)
-                                                        .pop(false),
-                                                child: const Text("Cancel")),
-                                          ],
-                                        );
-                                      });
-                                },
-                                onDismissed: (DismissDirection direction) {
-                                  fbase.deletedata(id);
-                                  print("dis $direction");
-                                },
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Dismissible(
+                              key: ValueKey(id),
+                              background: Padding(
+                                padding: const EdgeInsets.all(8.0),
                                 child: Container(
                                   height: 100,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: themeData
-                                        .listofclrs[document['colorIndex']],
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
                                   ),
-                                  child: Column(
-                                    children: [
-                                      Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              children: [
-                                                InkWell(
-                                                    onTap: () {
-                                                      Navigator.of(context)
-                                                          .push(
-                                                              MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Update(
-                                                          id: id,
-                                                          message:
-                                                              document['note'],
-                                                          currentIndex:
-                                                              document[
-                                                                  'colorIndex'],
-                                                        ),
-                                                      ));
-                                                    },
-                                                    child:
-                                                        const Icon(Icons.edit)),
-                                                InkWell(
-                                                    onTap: () {
-                                                      fbase.deletedata(id);
-                                                    },
-                                                    child: const Icon(
-                                                        Icons.delete)),
-                                              ],
-                                            ),
-                                          )),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(document['note'])),
-                                      ),
-                                    ],
-                                  ),
+                                  child: const Align(
+                                      alignment: Alignment.center,
+                                      child: Text("Deleted")),
                                 ),
                               ),
-                            );
-                          },
-                        )
-                      : ListView.builder(
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            QueryDocumentSnapshot document =
-                                snapshot.data!.docs[index];
-
-                            var id = snapshot.data!.docs[index].id;
-
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Dismissible(
-                                key: ValueKey(id),
-                                background: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height: 100,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.red,
-                                    ),
-                                    child: const Align(
-                                        alignment: Alignment.center,
-                                        child: Text("Deleted")),
-                                  ),
+                              confirmDismiss:
+                                  (DismissDirection direction) async {
+                                return await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Confirm"),
+                                        content: const Text("Are you sure"),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(true),
+                                              child: const Text("Delete")),
+                                          ElevatedButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(false),
+                                              child: const Text("Cancel")),
+                                        ],
+                                      );
+                                    });
+                              },
+                              onDismissed: (DismissDirection direction) {
+                                fbase.deletedata(id);
+                                print("dis $direction");
+                              },
+                              child: Container(
+                                height: 180,
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  color: themeData
+                                      .listofclrs[document['colorIndex']],
                                 ),
-                                confirmDismiss:
-                                    (DismissDirection direction) async {
-                                  return await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text("Confirm"),
-                                          content: const Text("Are you sure"),
-                                          actions: <Widget>[
-                                            ElevatedButton(
-                                                onPressed: () =>
+                                child: Column(
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              InkWell(
+                                                  onTap: () {
                                                     Navigator.of(context)
-                                                        .pop(true),
-                                                child: const Text("Delete")),
-                                            ElevatedButton(
-                                                onPressed: () =>
-                                                    Navigator.of(context)
-                                                        .pop(false),
-                                                child: const Text("Cancel")),
-                                          ],
-                                        );
-                                      });
-                                },
-                                onDismissed: (DismissDirection direction) {
-                                  fbase.deletedata(id);
-                                  print("dis $direction");
-                                },
+                                                        .push(MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Update(
+                                                        id: id,
+                                                        message:
+                                                            document['note'],
+                                                        description:
+                                                            document['desc'],
+                                                        currentIndex: document[
+                                                            'colorIndex'],
+                                                      ),
+                                                    ));
+                                                  },
+                                                  child:
+                                                      const Icon(Icons.edit)),
+                                            ],
+                                          ),
+                                        )),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(document['note'])),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(document['desc'])),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : ListView.builder(
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) {
+                          QueryDocumentSnapshot document =
+                              snapshot.data!.docs[index];
+
+                          var id = snapshot.data!.docs[index].id;
+
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Dismissible(
+                              key: ValueKey(id),
+                              background: Padding(
+                                padding: const EdgeInsets.all(8.0),
                                 child: Container(
                                   height: 100,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    color: themeData
-                                        .listofclrs[document['colorIndex']],
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
                                   ),
-                                  child: Column(
-                                    children: [
-                                      Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              children: [
-                                                InkWell(
-                                                    onTap: () {
-                                                      Navigator.of(context)
-                                                          .push(
-                                                              MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            Update(
-                                                          id: id,
-                                                          message:
-                                                              document['note'],
-                                                          currentIndex:
-                                                              document[
-                                                                  'colorIndex'],
-                                                        ),
-                                                      ));
-                                                    },
-                                                    child:
-                                                        const Icon(Icons.edit)),
-                                                InkWell(
-                                                    onTap: () {
-                                                      fbase.deletedata(id);
-                                                    },
-                                                    child: const Icon(
-                                                        Icons.delete)),
-                                              ],
-                                            ),
-                                          )),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(document['note'])),
-                                      ),
-                                    ],
-                                  ),
+                                  child: const Align(
+                                      alignment: Alignment.center,
+                                      child: Text("Deleted")),
                                 ),
                               ),
-                            );
-                          });
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              }),
-        ),
+                              confirmDismiss:
+                                  (DismissDirection direction) async {
+                                return await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Confirm"),
+                                        content: const Text("Are you sure"),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(true),
+                                              child: const Text("Delete")),
+                                          ElevatedButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context)
+                                                      .pop(false),
+                                              child: const Text("Cancel")),
+                                        ],
+                                      );
+                                    });
+                              },
+                              onDismissed: (DismissDirection direction) {
+                                fbase.deletedata(id);
+                                print("dis $direction");
+                              },
+                              child: Container(
+                                height: 180,
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                decoration: BoxDecoration(
+                                  color: themeData
+                                      .listofclrs[document['colorIndex']],
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  // mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              InkWell(
+                                                  onTap: () {
+                                                    Navigator.of(context)
+                                                        .push(MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          Update(
+                                                        id: id,
+                                                        message:
+                                                            document['note'],
+                                                        description:
+                                                            document['desc'],
+                                                        currentIndex: document[
+                                                            'colorIndex'],
+                                                      ),
+                                                    ));
+                                                  },
+                                                  child:
+                                                      const Icon(Icons.edit)),
+                                            ],
+                                          ),
+                                        )),
+                                    Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Text(document['note'])),
+                                    Text(document['desc']),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        });
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            }),
       ),
     );
   }
